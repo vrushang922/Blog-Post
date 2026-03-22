@@ -1,0 +1,213 @@
+{% extends "myapp/base.html" %} {% block content %}
+
+<!-- Google Fonts -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+  body {
+    font-family: "Inter", sans-serif;
+    background: #f4f6f9;
+    color: #2c2c2c;
+  }
+
+  h1 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: 2.4rem;
+    color: #2c3e50;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    letter-spacing: -0.5px;
+  }
+
+  /* Post Title */
+  .article-title {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #2c3e50;
+    position: relative;
+    text-decoration: none;
+    padding-bottom: 4px;
+    transition: color 0.3s ease;
+  }
+
+  .article-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background-color: #1d4ed8;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .article-title:hover {
+    color: #1d4ed8;
+  }
+
+  .article-title:hover::after {
+    width: 100%;
+  }
+
+  /* Author Styling (no underline, nice subtle style) */
+  .post-author {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #6b7280; /* subtle gray */
+    text-decoration: none; /* remove underline */
+    padding: 2px 6px;
+    border-radius: 6px;
+    background-color: #f0f4f8; /* soft background */
+    transition: all 0.3s ease;
+  }
+
+  .post-author:hover {
+    color: #1d4ed8;
+    background-color: #e0e7ff; /* light blue highlight on hover */
+  }
+
+  .custom-card {
+    border: none;
+    border-radius: 16px;
+    background: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .custom-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .card-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #374151;
+    margin-top: 0.5rem;
+  }
+
+  .alert {
+    border-radius: 12px;
+    font-family: "Inter", sans-serif;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  /* Pagination styling */
+  .pagination {
+    justify-content: center;
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .pagination .page-link {
+    color: #1d4ed8;
+    border: none;
+    font-weight: 500;
+    border-radius: 10px;
+    margin: 0 6px;
+    padding: 8px 14px;
+    transition: all 0.3s ease;
+  }
+
+  .pagination .page-link:hover {
+    background-color: #1d4ed8;
+    color: #fff;
+  }
+
+  .pagination .disabled .page-link {
+    color: #9ca3af;
+    pointer-events: none;
+  }
+
+  .pagination .group-start {
+    margin-right: 16px;
+  }
+
+  .pagination .group-end {
+    margin-left: 16px;
+  }
+</style>
+
+<div class="container mt-5">
+  <h1>📝 Posts Feed</h1>
+
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+      {% for post in posts %}
+      <div class="custom-card mb-4">
+        <h2>
+          <a class="article-title" href="{% url 'post-detail' post.id %}">
+            {{ post.title }}
+          </a>
+        </h2>
+        <a
+          class="post-author"
+          href="{% url 'user-posts' post.author.username %}"
+        >
+          ✍️ By {{ post.author }}
+        </a>
+        <p class="card-text">{{ post.content|truncatewords:40 }}</p>
+      </div>
+      {% empty %}
+      <div class="alert alert-warning" role="alert">No posts available.</div>
+      {% endfor %}
+
+      <!-- Simple Pagination: First, Prev, Next, Last -->
+      {% if is_paginated %}
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+          <li class="page-item group-start">
+            <a class="page-link" href="?page=1">First</a>
+          </li>
+          <li class="page-item">
+            <a
+              class="page-link"
+              href="?page={{ page_obj.previous_page_number }}"
+              >Prev</a
+            >
+          </li>
+          {% else %}
+          <li class="page-item disabled group-start">
+            <span class="page-link">First</span>
+          </li>
+          <li class="page-item disabled">
+            <span class="page-link">Prev</span>
+          </li>
+          {% endif %} {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}"
+              >Next</a
+            >
+          </li>
+          <li class="page-item group-end">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"
+              >Last</a
+            >
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Next</span>
+          </li>
+          <li class="page-item disabled group-end">
+            <span class="page-link">Last</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

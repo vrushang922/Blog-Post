@@ -1,0 +1,35 @@
+{% extends "myapp/base.html" %} {% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8 col-lg-7">
+      <!-- not too wide -->
+      <div class="card shadow rounded-3">
+        <div class="card-header bg-primary">
+          <h6 class="mb-0 text-white">Delete Account</h6>
+        </div>
+        <div class="card-body text-start">
+          <p class="fw-bold text-muted mb-3">
+            Are you sure you want to delete<br />
+            <span class="text-primary fw-bold fs-5">"{{ user.username }}"</span>
+            ?
+          </p>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex justify-content-start gap-3 mt-3">
+              <button type="submit" class="btn btn-danger px-4">
+                Yes, Delete
+              </button>
+              <a
+                class="btn btn-outline-secondary px-4"
+                href="{% url 'profile' %}"
+              >
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

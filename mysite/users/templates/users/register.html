@@ -1,0 +1,29 @@
+{% extends "myapp/base.html" %} {% load crispy_forms_tags %} {% block content %}
+<div class="container mt-5">
+  <h2>Create New Account</h2>
+
+  <!-- Show Django success or error messages -->
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %} {% endif %}
+
+  <!-- Registration form -->
+  <form method="POST">
+    {% csrf_token %} {{ form|crispy }}
+
+    <!-- ✅ Button with margin and Bootstrap style -->
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success btn-lg btn-block">
+        Register
+      </button>
+    </div>
+  </form>
+
+  <div class="border-top mt-3">
+    <small class="text-muted">
+      Already have an Account?
+      <a class="ml-2 text-decoration-none" href="{% url 'login' %}">Login</a>
+    </small>
+  </div>
+</div>
+{% endblock %}
