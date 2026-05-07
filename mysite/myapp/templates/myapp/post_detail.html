@@ -1,4 +1,6 @@
-{% extends "myapp/base.html" %} {% block content %}
+{% extends "myapp/base.html" %}
+{% block content %}
+
 <style>
   /* Post container */
   .content-section {
@@ -7,7 +9,9 @@
     padding: 2rem;
     margin-top: 2rem;
     border: 1px solid #e0e0e0;
-    transition: box-shadow 0.25s ease, transform 0.2s ease;
+    transition:
+      box-shadow 0.25s ease,
+      transform 0.2s ease;
   }
 
   .content-section:hover {
@@ -27,16 +31,16 @@
     display: inline-block;
     font-weight: 600;
     color: #1d4ed8;
-    background-color: #e0f2fe; /* subtle blue background */
+    background-color: #e0f2fe;
     padding: 2px 8px;
     border-radius: 6px;
-    text-decoration: none; /* remove underline */
+    text-decoration: none;
     transition: all 0.3s ease;
   }
 
   .post-author:hover {
-    color: #0c4a6e; /* darker blue on hover */
-    background-color: #bae6fd; /* lighter highlight on hover */
+    color: #0c4a6e;
+    background-color: #bae6fd;
   }
 
   /* Title */
@@ -64,37 +68,114 @@
     font-size: 0.95rem;
     border-radius: 0.5rem;
   }
+
+  /* Like section */
+  .like-section {
+    margin-top: 1rem;
+  }
+
+  .like-count {
+    font-size: 0.95rem;
+    color: #6c757d;
+  }
 </style>
 
 <div class="container">
   <article class="content-section">
-    <!-- Metadata row -->
-    <div
-      class="d-flex justify-content-between align-items-center article-metadata"
-    >
+
+    <!-- Metadata -->
+    <div class="d-flex justify-content-between align-items-center article-metadata">
       <a class="post-author" href="{% url 'user-posts' post.author.username %}">
         ✍️ {{ post.author }}
       </a>
-      <div>{{ object.date_posted|date:"F d, Y" }}</div>
+
+      <div>
+        {{ object.date_posted|date:"F d, Y" }}
+      </div>
     </div>
 
     <!-- Title -->
-    <h2 class="article-title">{{ object.title }}</h2>
+    <h2 class="article-title">
+      {{ post.title }}
+    </h2>
 
     <!-- Content -->
-    <p class="article-content">{{ object.content }}</p>
+    <p class="article-content">
+      {{ post.content }}
+    </p>
 
-    <!-- Actions (Update/Delete) -->
-    {% if object.author == user %}
+    <!-- LIKE SECTION -->
+    <div class="d-flex align-items-center gap-3 like-section">
+
+      {% if user.is_authenticated %}
+
+      <form
+        action="{% url 'toggle-like' post.id %}"
+        method="POST"
+        class="m-0"
+      >
+        {% csrf_token %}
+
+        {% if post.id in liked_posts %}
+          <button
+            type="submit"
+            class="btn btn-outline-danger btn-sm"
+          >
+            ❤️ Liked
+          </button>
+
+        {% else %}
+
+          <button
+            type="submit"
+            class="btn btn-outline-primary btn-sm"
+          >
+            🤍 Like
+          </button>
+
+        {% endif %}
+      </form>
+
+      {% else %}
+
+      <a
+        href="{% url 'login' %}"
+        class="btn btn-outline-secondary btn-sm"
+      >
+        Login to Like
+      </a>
+
+      {% endif %}
+
+      <!-- Like Count -->
+      <span class="like-count">
+        ❤️ {{ like_count }} Likes
+      </span>
+
+    </div>
+
+    <!-- Update/Delete -->
+    {% if post.author == user %}
     <div class="post-actions d-flex gap-2">
-      <a class="btn btn-secondary" href="{% url 'post-update' object.pk %}"
-        >Update</a
+
+      <a
+        class="btn btn-secondary"
+        href="{% url 'post-update' post.pk %}"
       >
-      <a class="btn btn-danger" href="{% url 'post-delete' object.pk %}"
-        >Delete</a
+        Update
+      </a>
+
+      <a
+        class="btn btn-danger"
+        href="{% url 'post-delete' post.pk %}"
       >
+        Delete
+      </a>
+
     </div>
     {% endif %}
+
   </article>
 </div>
+
 {% endblock content %}

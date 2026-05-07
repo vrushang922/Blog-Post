@@ -48,3 +48,4 @@ def profile(request):
 class UserDelete(DeleteView):
     model = User
     success_url = reverse_lazy("blog")
+    context_object_name = "user"

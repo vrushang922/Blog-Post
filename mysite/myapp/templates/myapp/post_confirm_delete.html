@@ -10,7 +10,7 @@
         <div class="card-body text-start">
           <p class="fw-bold text-muted mb-3">
             Are you sure you want to delete<br />
-            <span class="text-primary fw-bold fs-5">"{{ object.title }}"</span>
+            <span class="text-primary fw-bold fs-5">"{{ post.title }}"</span>
             ?
           </p>
           <form method="POST">
@@ -21,7 +21,7 @@
               </button>
               <a
                 class="btn btn-outline-secondary px-4"
-                href="{% url 'post-detail' object.id %}"
+                href="{% url 'post-detail' post.id %}"
               >
                 Cancel
               </a>

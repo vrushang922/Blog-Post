@@ -34,9 +34,13 @@
 
         <!-- 🗑️ Delete Account Button -->
         <a
-          href="{% url 'user-delete' request.user.pk %}"
+          href="{% url 'user-delete' user.pk %}"
           class="btn btn-outline-danger p-2 border-1 my-3 text-danger rounded shadow"
-          onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');"
+          onclick="
+            return confirm(
+              'Are you sure you want to delete your account? This action cannot be undone.',
+            );
+          "
         >
           Delete Account
         </a>
