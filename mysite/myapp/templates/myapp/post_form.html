@@ -1,22 +1,56 @@
-{% extends "myapp/base.html" %} {% load crispy_forms_tags %} {% block content %}
-<div class="container mt-4">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card shadow-lg rounded-3">
-        <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Create New Post</h4>
-        </div>
-        <div class="card-body">
-          <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %} {{ form|crispy }}
+{% extends "myapp/base.html" %} 
+{% load crispy_forms_tags %} 
+{% block content %}
+<style>
+  .editor-container {
+    max-width: 750px;
+    margin: 0 auto;
+  }
+  .editor-card {
+    padding: 3rem;
+  }
+  .editor-header {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .editor-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #142235, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  /* Specific styling overrides for crispy form post editor */
+  .editor-card textarea {
+    min-height: 250px;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+</style>
 
-            <div class="d-flex justify-content-between mt-3">
-              <button type="submit" class="btn btn-success">Post</button>
-            </div>
-          </form>
-        </div>
-      </div>
+<div class="editor-container mt-4">
+  <div class="glass-card editor-card">
+    <div class="editor-header">
+      <h2 class="editor-title">
+        <i class="fa-solid fa-pen-nib text-primary me-2"></i>
+        {% if object %}Edit Insight{% else %}Draft a Story{% endif %}
+      </h2>
     </div>
+    
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %} 
+      {{ form|crispy }}
+
+      <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top border-secondary border-opacity-10">
+        <a href="{% if object %}{% url 'post-detail' object.id %}{% else %}{% url 'blog' %}{% endif %}" class="btn btn-secondary">
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-primary px-4">
+          <i class="fa-solid fa-cloud-arrow-up me-1"></i>Publish Story
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock content %}

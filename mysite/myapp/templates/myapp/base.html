@@ -4,186 +4,563 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>{% block title %}My Blog{% endblock %}</title>
-    <!-- Bootstrap CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}My Blog - Premium Insights{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Plus Jakarta Sans for Headings, Inter for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
+    <!-- FontAwesome Icons for modern SVG icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-        background: #f4f6f9;
-        color: #2c2c2c;
+      :root {
+        --bg-main: #f8f3e8;
+        --text-main: #5b6878;
+        --text-title: #142235;
+        --glass-bg: rgba(255, 255, 255, 0.82);
+        --glass-border: rgba(148, 163, 184, 0.2);
+        --surface-soft: #f7fbff;
+        --surface-muted: #edf4fb;
+        --surface-warm: #fff8ee;
+        --primary-gradient: linear-gradient(135deg, #2563eb 0%, #38bdf8 58%, #f59e0b 100%);
+        --primary-accent: #2563eb;
+        --primary-accent-hover: #1d4ed8;
       }
 
-      /* ✅ Sticky custom navbar */
+      /* Base layout resets */
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        color-scheme: light;
+        background-color: var(--bg-main);
+        background-image: 
+          radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.14) 0px, transparent 45%),
+          radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.12) 0px, transparent 42%),
+          radial-gradient(at 50% 100%, rgba(37, 99, 235, 0.08) 0px, transparent 48%);
+        background-attachment: fixed;
+        color: var(--text-main);
+        min-height: 100vh;
+        overflow-x: hidden;
+        letter-spacing: -0.01em;
+      }
+
+      /* Typography */
+      h1, h2, h3, h4, h5, h6 {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        color: var(--text-title);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      a {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Smooth Scrollbars */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f4ecdd;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(100, 116, 139, 0.28);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(59, 130, 246, 0.38);
+      }
+
+      /* Floating premium sticky navbar */
       .custom-navbar {
-        background-color: #d1d5db; /* medium gray */
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 250, 241, 0.82);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 0.9rem 0;
         position: sticky;
         top: 0;
         z-index: 1030;
+        box-shadow: 0 14px 32px rgba(148, 163, 184, 0.16);
       }
 
-      /* ✅ Navbar links — all same style with smooth transition */
-      .custom-navbar .navbar-brand,
-      .custom-navbar .nav-link {
-        color: #374151 !important; /* dark gray */
-        font-weight: 500;
-        font-family: "Inter", sans-serif;
-        font-size: 1rem;
-        margin-right: 0.8rem;
-        border-radius: 6px;
-        padding: 6px 12px;
+      .navbar-brand-gradient {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-weight: 800;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.5px;
+        font-size: 1.4rem;
         text-decoration: none;
-        transition: color 0.3s ease, background-color 0.3s ease;
+        transition: filter 0.3s ease;
       }
 
-      /* Hover effect — white text on blue background */
-      .custom-navbar .nav-link:hover,
-      .custom-navbar .nav-link:focus,
-      .custom-navbar .navbar-brand:hover,
-      .custom-navbar .navbar-brand:focus {
-        color: #ffffff !important;
-        background-color: #1d4ed8;
-        font-weight: 500;
+      .navbar-brand-gradient:hover {
+        filter: brightness(1.05) drop-shadow(0 10px 18px rgba(37, 99, 235, 0.18));
       }
 
-      /* Active li  nk — permanent hover effect */
-      .custom-navbar .nav-link.active,
-      .custom-navbar .navbar-brand.active {
-        color: #ffffff !important;
-        background-color: #1d4ed8;
-        font-weight: 500;
-      }
-
-      /* ✅ Logout button */
-      .logout-btn {
-        background: #dc2626;
-        border: none;
-        color: #fff;
+      .custom-navbar .nav-link {
+        color: #334155 !important;
         font-weight: 600;
-        padding: 6px 12px;
-        border-radius: 6px;
-        transition: background 0.3s ease;
-        width: 100%;
-        text-align: center;
+        font-size: 0.95rem;
+        padding: 0.5rem 1rem !important;
+        border-radius: 8px;
+        margin: 0 0.15rem;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
-      .logout-btn:hover {
-        background: #b91c1c;
-        color: #fff;
+      .custom-navbar .nav-link:hover,
+      .custom-navbar .nav-link.active {
+        color: var(--text-title) !important;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.18);
       }
 
-      /* ✅ Flash messages */
-      .alert {
+      /* Premium buttons */
+      .new-post-nav-btn {
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+      }
+
+      .new-post-nav-btn:hover {
+        transform: translateY(-1.5px);
+        box-shadow: 0 14px 28px rgba(37, 99, 235, 0.26);
+        filter: brightness(1.04);
+      }
+
+      .logout-btn-nav {
+        background: rgba(254, 226, 226, 0.7) !important;
+        color: #dc2626 !important;
+        border: 1px solid rgba(248, 113, 113, 0.28) !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 8px;
+        transition: all 0.25s ease !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .logout-btn-nav:hover {
+        background: #ef4444 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        border-color: #ef4444 !important;
+      }
+
+      .nav-item form {
+        display: inline;
+      }
+
+      /* Glassmorphism card system */
+      .glass-card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 252, 255, 0.84));
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        box-shadow: 0 18px 40px rgba(148, 163, 184, 0.18);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .glass-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.24), transparent);
+        pointer-events: none;
+      }
+
+      .glass-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(37, 99, 235, 0.14);
+        box-shadow: 0 24px 50px rgba(148, 163, 184, 0.22);
+      }
+
+      /* Premium global inputs styles */
+      .form-control, .form-select, textarea {
+        background-color: rgba(255, 255, 255, 0.92) !important;
+        border: 1px solid rgba(148, 163, 184, 0.32) !important;
+        color: #0f172a !important;
+        border-radius: 10px !important;
+        padding: 0.75rem 1rem !important;
+        transition: all 0.25s ease !important;
+      }
+
+      .form-control::placeholder {
+        color: #94a3b8 !important;
+        opacity: 0.8;
+      }
+
+      .form-control:focus, .form-select:focus, textarea:focus {
+        background-color: #ffffff !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14) !important;
+        outline: none !important;
+      }
+
+      .form-label {
+        color: #334155 !important;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .help-text, .form-text {
+        color: #64748b !important;
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+      }
+
+      /* Custom Alert popups styling */
+      .custom-alert {
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border-radius: 12px;
-        font-family: "Inter", sans-serif;
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-left: 4px solid var(--primary-accent);
+        color: #1e293b;
+        box-shadow: 0 16px 30px rgba(148, 163, 184, 0.18);
+        font-weight: 500;
+      }
+      .alert-success { border-left: 4px solid #10b981 !important; }
+      .alert-danger, .alert-error { border-left: 4px solid #ef4444 !important; }
+      .alert-warning { border-left: 4px solid #f59e0b !important; }
+      .alert-info { border-left: 4px solid #3b82f6 !important; }
+
+      /* Buttons customization */
+      .btn-primary {
+        background: linear-gradient(135deg, #2563eb, #38bdf8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.72) !important;
+        font-weight: 600 !important;
+        padding: 0.7rem 1.5rem !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1.5px) !important;
+        box-shadow: 0 14px 26px rgba(37, 99, 235, 0.26) !important;
+        filter: brightness(1.04) !important;
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #059669, #10b981) !important;
+        border: 1px solid rgba(255, 255, 255, 0.72) !important;
+        font-weight: 600 !important;
+        padding: 0.7rem 1.5rem !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      .btn-success:hover {
+        transform: translateY(-1.5px) !important;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
+        filter: brightness(1.1) !important;
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #dc2626, #f87171) !important;
+        border: 1px solid rgba(255, 255, 255, 0.72) !important;
+        font-weight: 600 !important;
+        padding: 0.7rem 1.5rem !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 14px rgba(220, 38, 38, 0.2) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-1.5px) !important;
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3) !important;
+        filter: brightness(1.1) !important;
+      }
+
+      .btn-secondary, .btn-outline-secondary {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid rgba(148, 163, 184, 0.22) !important;
+        color: #334155 !important;
+        font-weight: 600 !important;
+        padding: 0.7rem 1.5rem !important;
+        border-radius: 10px !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      .btn-secondary:hover, .btn-outline-secondary:hover {
+        background: #ffffff !important;
+        transform: translateY(-1.5px) !important;
+        border-color: rgba(37, 99, 235, 0.2) !important;
+        color: var(--text-title) !important;
+      }
+
+      /* Custom Avatar Initial Circle Generator */
+      .avatar-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        text-shadow: 0 1px 2px rgba(15, 23, 42, 0.18);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+
+      /* Page transitions, layouts */
+      .page-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      footer {
+        padding: 2.5rem 0;
+        border-top: 1px solid var(--glass-border);
+        background: rgba(255, 250, 241, 0.88);
+        color: #64748b;
+        font-size: 0.9rem;
+        text-align: center;
+        margin-top: 5rem;
+      }
+
+      .text-muted-opacity {
+        color: #64748b;
+      }
+
+      .text-secondary,
+      .text-muted {
+        color: #64748b !important;
+      }
+
+      /* Premium Mobile Responsiveness System */
+      @media (max-width: 991.98px) {
+        .custom-navbar .navbar-collapse {
+          background: rgba(255, 252, 246, 0.96);
+          backdrop-filter: blur(25px);
+          -webkit-backdrop-filter: blur(25px);
+          border-radius: 14px;
+          padding: 1.5rem;
+          margin-top: 1rem;
+          border: 1px solid rgba(148, 163, 184, 0.16);
+          box-shadow: 0 20px 36px rgba(148, 163, 184, 0.2);
+        }
+        .custom-navbar .navbar-nav {
+          align-items: stretch !important;
+          width: 100%;
+        }
+        .custom-navbar .nav-link {
+          padding: 0.75rem 1.25rem !important;
+          margin: 0.25rem 0 !important;
+          width: 100%;
+          justify-content: flex-start;
+          border-radius: 8px;
+        }
+        .custom-navbar .ms-auto {
+          margin-left: 0 !important;
+          border-top: 1px solid rgba(148, 163, 184, 0.14);
+          padding-top: 0.75rem;
+          margin-top: 0.5rem;
+          width: 100%;
+          align-items: stretch !important;
+        }
+        .custom-navbar .ms-auto .nav-item {
+          width: 100%;
+        }
+        .new-post-nav-btn {
+          margin-bottom: 0.5rem;
+          width: 100%;
+          justify-content: center !important;
+          padding: 0.75rem !important;
+        }
+        .logout-btn-nav {
+          width: 100%;
+          justify-content: center !important;
+          padding: 0.75rem !important;
+        }
+        .custom-navbar .ms-auto .nav-item .btn-primary {
+          width: 100%;
+          justify-content: center !important;
+          padding: 0.75rem !important;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .page-container {
+          padding: 1.25rem 0.5rem !important;
+        }
+        .glass-card {
+          border-radius: 12px !important;
+        }
       }
     </style>
   </head>
   <body>
-    <!-- ✅ Navbar -->
+    <!-- Premium Header Navbar -->
     <nav class="navbar navbar-expand-lg custom-navbar">
       <div class="container">
-        <a
-          class="navbar-brand {% if request.path == '/' %}active{% endif %}"
-          href="{% url 'home' %}"
-        >
-          My Blog
+        <a class="navbar-brand-gradient" href="{% url 'home' %}">
+          <i class="fa-solid fa-bolt me-1"></i>MyBlog
         </a>
         <button
-          class="navbar-toggler"
+          class="navbar-toggler border-0 bg-transparent"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-icon"></span>
+          <i class="fa-solid fa-bars fs-4"></i>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
+          <ul class="navbar-nav ms-auto align-items-center">
             <li class="nav-item">
               <a
-                class="nav-link {% if request.path == '/blog/' %}active{% endif %}"
+                class="nav-link {% if request.path == '/blog/' %}active{% endif %} me-2"
                 href="{% url 'blog' %}"
-                >Blog</a
               >
+                <i class="fa-regular fa-newspaper"></i>Blogs
+              </a>
             </li>
-          </ul>
-          <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
             <li class="nav-item">
               <a
-                class="nav-link {% if request.path == '/post-create/' %}active{% endif %}"
+                class="nav-link new-post-nav-btn px-3 py-2 rounded-3 me-2"
                 href="{% url 'post-create' %}"
-                >New Post</a
               >
+                <i class="fa-solid fa-plus-circle"></i>New Blog
+              </a>
             </li>
             <li class="nav-item">
               <a
-                class="nav-link {% if request.path == '/profile/' %}active{% endif %}"
+                class="nav-link {% if request.path == '/profile/' %}active{% endif %} me-2"
                 href="{% url 'profile' %}"
-                >Profile</a
               >
+                <i class="fa-regular fa-user"></i>Profile
+              </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mt-2 mt-lg-0">
               <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <button type="submit" class="logout-btn">Logout</button>
+                <button type="submit" class="logout-btn-nav">
+                  <i class="fa-solid fa-right-from-bracket"></i>Logout
+                </button>
               </form>
             </li>
             {% else %}
             <li class="nav-item">
               <a
-                class="nav-link {% if request.path == '/register/' %}active{% endif %}"
+                class="nav-link {% if request.path == '/register/' %}active{% endif %} me-2"
                 href="{% url 'register' %}"
-                >Register</a
               >
+                <i class="fa-solid fa-user-plus"></i>Register
+              </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mt-2 mt-lg-0">
               <a
-                class="nav-link {% if request.path == '/login/' %}active{% endif %}"
+                class="nav-link btn-primary px-3 py-2 rounded-3 text-white"
                 href="{% url 'login' %}"
-                >Login</a
+                style="display: flex;"
               >
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>Login
+              </a>
             </li>
             {% endif %}
+
           </ul>
         </div>
       </div>
     </nav>
 
-    <!-- ✅ Flash messages -->
+    <!-- Custom Alerts Notification Center -->
     <div class="container mt-3">
-      {% if messages %} {% for message in messages %}
-      <div
-        class="alert alert-{{ message.tags }} alert-dismissible fade show text-center"
-        role="alert"
-      >
-        {{ message }}
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
-      {% endfor %} {% endif %}
+      {% if messages %}
+        {% for message in messages %}
+          <div
+            class="alert alert-{{ message.tags }} custom-alert alert-dismissible fade show text-center d-flex align-items-center justify-content-center gap-2"
+            role="alert"
+          >
+            {% if message.tags == 'success' %}
+              <i class="fa-solid fa-circle-check text-success fs-5"></i>
+            {% elif message.tags == 'danger' or message.tags == 'error' %}
+              <i class="fa-solid fa-circle-exclamation text-danger fs-5"></i>
+            {% elif message.tags == 'warning' %}
+              <i class="fa-solid fa-triangle-exclamation text-warning fs-5"></i>
+            {% else %}
+              <i class="fa-solid fa-circle-info text-info fs-5"></i>
+            {% endif %}
+            <span>{{ message }}</span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        {% endfor %}
+      {% endif %}
     </div>
 
-    <!-- ✅ Main content -->
-    <div class="container mt-4">{% block content %} {% endblock %}</div>
+    <!-- Main Content Slot -->
+    <main class="page-container">
+      {% block content %} {% endblock %}
+    </main>
 
-    <!-- Bootstrap JS -->
+    <!-- Premium Footer -->
+    <footer>
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+            <span class="navbar-brand-gradient fs-5"><i class="fa-solid fa-bolt me-1"></i>MyBlog</span>
+            <p class="mt-2 mb-0 text-muted-opacity">Elevate your thoughts. Share beautiful ideas with the world.</p>
+          </div>
+          <div class="col-md-6 text-center text-md-end">
+            <p class="mb-0">&copy; 2026 Vrushang Shah. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+

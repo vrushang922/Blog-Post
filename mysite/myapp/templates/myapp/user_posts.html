@@ -1,223 +1,263 @@
-{% extends "myapp/base.html" %} {% block content %}
-
-<!-- Google Fonts -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap"
-  rel="stylesheet"
-/>
+{% extends "myapp/base.html" %} 
+{% block content %}
 
 <style>
-  body {
-    font-family: "Inter", sans-serif;
-    background: #f4f6f9;
-    color: #2c2c2c;
+  .profile-header-card {
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
   }
 
-  /* 🔹 Main Page Title (Posts by Username) */
-  .page-title {
-    font-family: "Poppins", sans-serif;
-    font-weight: 700;
+  .profile-header-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, rgba(245, 158, 11, 0.08) 45%, transparent 72%);
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(25px);
+  }
+
+  .profile-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #38bdf8);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 2.2rem;
-    color: #1d4ed8;
-    margin-bottom: 2rem;
-    text-align: center;
-    background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+    font-weight: 800;
+    margin: 0 auto 1.5rem auto;
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18);
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .profile-username {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #142235, #2563eb);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
   }
 
-  .page-subtitle {
-    font-size: 1rem;
+  .profile-stats-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    font-size: 0.9rem;
+    color: #64748b;
     font-weight: 500;
-    text-align: center;
-    color: #6b7280;
-    margin-bottom: 2.5rem;
   }
 
-  .article-title {
-    font-family: "Poppins", sans-serif;
-    font-size: 1.7rem;
+  /* Post Card Uniform Styling */
+  .article-card {
+    margin-bottom: 2rem;
+    padding: 2.25rem;
+  }
+
+  .post-card-title {
+    font-size: 1.6rem;
     font-weight: 700;
-    color: #2c3e50;
-    position: relative;
+    margin-bottom: 1rem;
+    line-height: 1.35;
+  }
+
+  .post-card-title-link {
+    color: var(--text-title);
     text-decoration: none;
-    padding-bottom: 4px;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
   }
 
-  .article-title::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 3px;
-    background-color: #1d4ed8;
-    border-radius: 2px;
-    transition: width 0.3s ease;
+  .post-card-title-link:hover {
+    color: #3b82f6;
   }
 
-  .article-title:hover {
-    color: #1d4ed8;
-  }
-
-  .article-title:hover::after {
-    width: 100%;
-  }
-
-  /* 🔹 Different style for Author link */
-  .post-author {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #6b7280;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-
-  .post-author:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
-  }
-
-  .custom-card {
-    border: none;
-    border-radius: 16px;
-    background: #fff;
-    padding: 2rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.3s ease;
-  }
-
-  .custom-card:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  }
-
-  .card-text {
+  .post-excerpt {
+    color: #5b6878;
     font-size: 1.05rem;
-    line-height: 1.7;
-    color: #374151;
-    margin-top: 0.5rem;
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
   }
 
-  .alert {
-    border-radius: 12px;
-    font-family: "Inter", sans-serif;
-    text-align: center;
-    font-size: 1rem;
-  }
-
-  /* Pagination styling */
-  .pagination {
-    justify-content: center;
-    margin-top: 2rem;
+  .post-meta-row {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(148, 163, 184, 0.16);
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
   }
 
-  .pagination .page-link {
-    color: #1d4ed8;
-    border: none;
+  .post-date-read {
+    font-size: 0.85rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .interaction-metrics {
+    display: flex;
+    gap: 1rem;
+    color: #64748b;
+    font-size: 0.85rem;
     font-weight: 500;
+  }
+
+  /* Pagination */
+  .pagination-container {
+    margin-top: 4rem;
+  }
+
+  .custom-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .custom-pagination .page-item .page-link {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    color: #64748b;
+    padding: 0.6rem 1.1rem;
     border-radius: 10px;
-    margin: 0 6px;
-    padding: 8px 14px;
-    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+    text-decoration: none;
   }
 
-  .pagination .page-link:hover {
-    background-color: #1d4ed8;
-    color: #fff;
+  .custom-pagination .page-item .page-link:hover {
+    background: #ffffff;
+    color: var(--text-title);
+    border-color: rgba(37, 99, 235, 0.18);
+    transform: translateY(-1px);
   }
 
-  .pagination .disabled .page-link {
-    color: #9ca3af;
+  .custom-pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #2563eb, #38bdf8);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
+  }
+
+  .custom-pagination .page-item.disabled .page-link {
+    background: rgba(255, 255, 255, 0.56);
+    border-color: rgba(148, 163, 184, 0.1);
+    color: #94a3b8;
     pointer-events: none;
-  }
-
-  .pagination .group-start {
-    margin-right: 16px;
-  }
-
-  .pagination .group-end {
-    margin-left: 16px;
   }
 </style>
 
-<div class="container mt-5">
-  <!-- 🔹 Page Title -->
-  <h1 class="page-title">Posts by {{ view.kwargs.username }}</h1>
-  <div class="page-subtitle">Total: {{ page_obj.paginator.count }} posts</div>
+<div class="glass-card profile-header-card">
+  <div class="profile-header-glow"></div>
+  <div class="profile-avatar-large">
+    {{ view.kwargs.username|slice:":1"|upper }}
+  </div>
+  <h1 class="profile-username">Posts by {{ view.kwargs.username }}</h1>
+  <div class="profile-stats-pill">
+    <i class="fa-regular fa-newspaper text-primary"></i>
+    <span>Total: <strong>{{ page_obj.paginator.count }}</strong> post{{ page_obj.paginator.count|pluralize }}</span>
+  </div>
+</div>
 
-  <div class="row justify-content-center">
-    <div class="col-md-9">
-      {% for post in posts %}
-      <div class="custom-card mb-4">
-        <h2>
-          <a class="article-title" href="{% url 'post-detail' post.id %}">
-            {{ post.title }}
-          </a>
-        </h2>
-        <a
-          class="post-author"
-          href="{% url 'user-posts' post.author.username %}"
-        >
-          ✍️ By {{ post.author }}
+<div class="row justify-content-center">
+  <div class="col-md-9">
+    {% for post in posts %}
+    <article class="glass-card article-card">
+      <h2 class="post-card-title">
+        <a class="post-card-title-link" href="{% url 'post-detail' post.id %}">
+          {{ post.title }}
         </a>
-        <p class="card-text">{{ post.content|truncatewords:40 }}</p>
-      </div>
-      {% empty %}
-      <div class="alert alert-warning" role="alert">No posts available.</div>
-      {% endfor %}
+      </h2>
+      
+      <p class="post-excerpt">{{ post.content|truncatewords:42 }}</p>
 
-      <!-- Simple Pagination -->
-      {% if is_paginated %}
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          {% if page_obj.has_previous %}
-          <li class="page-item group-start">
-            <a class="page-link" href="?page=1">First</a>
-          </li>
-          <li class="page-item">
-            <a
-              class="page-link"
-              href="?page={{ page_obj.previous_page_number }}"
-              >Prev</a
-            >
-          </li>
-          {% else %}
-          <li class="page-item disabled group-start">
-            <span class="page-link">First</span>
-          </li>
-          <li class="page-item disabled">
-            <span class="page-link">Prev</span>
-          </li>
-          {% endif %} {% if page_obj.has_next %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}"
-              >Next</a
-            >
-          </li>
-          <li class="page-item group-end">
-            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"
-              >Last</a
-            >
-          </li>
-          {% else %}
-          <li class="page-item disabled">
-            <span class="page-link">Next</span>
-          </li>
-          <li class="page-item disabled group-end">
-            <span class="page-link">Last</span>
-          </li>
-          {% endif %}
-        </ul>
-      </nav>
-      {% endif %}
+      <div class="post-meta-row">
+        <div class="post-date-read">
+          <span>Published recently</span>
+          <span>&bull;</span>
+          {% with w_count=post.content|wordcount %}
+          <span>
+            <i class="fa-regular fa-clock me-1"></i>
+            {% if w_count < 150 %}1{% elif w_count < 300 %}2{% elif w_count < 500 %}3{% else %}5{% endif %} min read
+          </span>
+          {% endwith %}
+        </div>
+
+        <div class="interaction-metrics">
+          <span><i class="fa-solid fa-heart text-danger me-1"></i>{{ post.liked_users.count }} Likes</span>
+          <span><i class="fa-regular fa-comment text-primary me-1"></i>{{ post.comments.count }} Comments</span>
+        </div>
+      </div>
+    </article>
+    {% empty %}
+    <div class="glass-card p-5 text-center">
+      <i class="fa-regular fa-folder-open fs-1 text-muted mb-3 d-block"></i>
+      <h4 class="mb-2" style="color: var(--text-title);">No posts available</h4>
+      <p class="text-secondary mb-0">This user hasn't published any Blogs yet.</p>
     </div>
+    {% endfor %}
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav class="pagination-container" aria-label="Page navigation">
+      <ul class="custom-pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1"><i class="fa-solid fa-angles-left"></i></a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-angle-left"></i> Prev</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fa-solid fa-angles-left"></i></span>
+        </li>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fa-solid fa-angle-left"></i> Prev</span>
+        </li>
+        {% endif %}
+
+        <li class="page-item active">
+          <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        </li>
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next <i class="fa-solid fa-angle-right"></i></a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next <i class="fa-solid fa-angle-right"></i></span>
+        </li>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fa-solid fa-angles-right"></i></span>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
   </div>
 </div>
 
 {% endblock content %}
+

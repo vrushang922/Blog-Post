@@ -1,181 +1,345 @@
 {% extends "myapp/base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
 
 <style>
-  /* Post container */
-  .content-section {
-    background-color: #f8f9fa;
-    border-radius: 0.75rem;
-    padding: 2rem;
-    margin-top: 2rem;
-    border: 1px solid #e0e0e0;
-    transition:
-      box-shadow 0.25s ease,
-      transform 0.2s ease;
+  .article-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
   }
 
-  .content-section:hover {
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
+  .detail-card {
+    padding: 3rem;
+    margin-bottom: 2.5rem;
   }
 
-  /* Metadata row */
-  .article-metadata {
-    font-size: 0.9rem;
-    color: #6c757d;
-    margin-bottom: 1rem;
+  .detail-meta-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
   }
 
-  /* Styled Author */
-  .post-author {
-    display: inline-block;
+  .author-info-group {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .detail-author-name {
+    color: var(--text-title);
     font-weight: 600;
-    color: #1d4ed8;
-    background-color: #e0f2fe;
-    padding: 2px 8px;
-    border-radius: 6px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    font-size: 1rem;
   }
 
-  .post-author:hover {
-    color: #0c4a6e;
-    background-color: #bae6fd;
+  .detail-author-name:hover {
+    color: #3b82f6;
   }
 
-  /* Title */
-  .article-title {
-    font-size: 1.75rem;
+  .detail-date {
+    font-size: 0.8rem;
+    color: #64748b;
+  }
+
+  .detail-title {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 1.75rem;
+    color: var(--text-title);
+  }
+
+  .detail-body-text {
+    color: #475569;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    letter-spacing: -0.005em;
+    white-space: pre-line;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Heart and interactive buttons */
+  .social-stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(148, 163, 184, 0.16);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    margin-bottom: 2.5rem;
+  }
+
+  .btn-like-detail {
+    background: rgba(254, 226, 226, 0.76);
+    border: 1px solid rgba(248, 113, 113, 0.18);
+    color: #dc2626;
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
     font-weight: 600;
-    color: #212529;
-    margin-bottom: 1rem;
-  }
-
-  /* Content */
-  .article-content {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: #495057;
-  }
-
-  /* Buttons */
-  .post-actions {
-    margin-top: 1.2rem;
-  }
-
-  .post-actions .btn {
-    padding: 0.4rem 1.2rem;
     font-size: 0.95rem;
-    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.25s ease;
   }
 
-  /* Like section */
-  .like-section {
-    margin-top: 1rem;
+  .btn-like-detail:hover {
+    background: rgba(254, 202, 202, 0.88);
+    transform: translateY(-1px);
   }
 
-  .like-count {
+  .btn-like-outline-detail {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    color: #64748b;
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
+    font-weight: 500;
     font-size: 0.95rem;
-    color: #6c757d;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.25s ease;
+  }
+
+  .btn-like-outline-detail:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.06);
+    border-color: rgba(239, 68, 68, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .like-counter-badge {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    color: #5b6878;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  /* Author action buttons */
+  .author-actions-box {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .btn-edit-post {
+    background: rgba(219, 234, 254, 0.88) !important;
+    border: 1px solid rgba(37, 99, 235, 0.18) !important;
+    color: #2563eb !important;
+    font-size: 0.9rem !important;
+    padding: 0.5rem 1.25rem !important;
+    border-radius: 8px !important;
+  }
+
+  .btn-edit-post:hover {
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+  }
+
+  .btn-delete-post {
+    background: rgba(254, 226, 226, 0.88) !important;
+    border: 1px solid rgba(248, 113, 113, 0.2) !important;
+    color: #dc2626 !important;
+    font-size: 0.9rem !important;
+    padding: 0.5rem 1.25rem !important;
+    border-radius: 8px !important;
+  }
+
+  .btn-delete-post:hover {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+  }
+
+  /* Comments structure */
+  .comments-container {
+    padding: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  .comments-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .comment-bubble {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .comment-bubble:hover {
+    border-color: rgba(37, 99, 235, 0.18);
+  }
+
+  .comment-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .commenter-name {
+    color: var(--text-title);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .comment-date {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  .comment-body {
+    color: #475569;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    margin-bottom: 0;
+    white-space: pre-wrap;
+  }
+
+  /* Custom Crispy Comment Form style tweaks */
+  .comments-container form textarea {
+    min-height: 100px;
+    resize: vertical;
   }
 </style>
 
-<div class="container">
-  <article class="content-section">
-
-    <!-- Metadata -->
-    <div class="d-flex justify-content-between align-items-center article-metadata">
-      <a class="post-author" href="{% url 'user-posts' post.author.username %}">
-        ✍️ {{ post.author }}
-      </a>
-
-      <div>
-        {{ object.date_posted|date:"F d, Y" }}
+<div class="article-detail-container">
+  <article class="glass-card detail-card">
+    <div class="detail-meta-bar">
+      <div class="author-info-group">
+        <div class="avatar-circle">
+          {{ post.author.username|slice:":1"|upper }}
+        </div>
+        <div>
+          <a class="detail-author-name" href="{% url 'user-posts' post.author.username %}">
+            {{ post.author }}
+          </a>
+          <div class="detail-date">Published recently</div>
+        </div>
+      </div>
+      
+      <div class="post-date-read text-muted">
+        {% with w_count=post.content|wordcount %}
+        <span>
+          <i class="fa-regular fa-clock me-1"></i>
+          {% if w_count < 150 %}1{% elif w_count < 300 %}2{% elif w_count < 500 %}3{% else %}5{% endif %} min read
+        </span>
+        {% endwith %}
       </div>
     </div>
 
-    <!-- Title -->
-    <h2 class="article-title">
-      {{ post.title }}
-    </h2>
+    <h1 class="detail-title">{{ post.title }}</h1>
 
-    <!-- Content -->
-    <p class="article-content">
+    <div class="detail-body-text">
       {{ post.content }}
-    </p>
-
-    <!-- LIKE SECTION -->
-    <div class="d-flex align-items-center gap-3 like-section">
-
-      {% if user.is_authenticated %}
-
-      <form
-        action="{% url 'toggle-like' post.id %}"
-        method="POST"
-        class="m-0"
-      >
-        {% csrf_token %}
-
-        {% if post.id in liked_posts %}
-          <button
-            type="submit"
-            class="btn btn-outline-danger btn-sm"
-          >
-            ❤️ Liked
-          </button>
-
-        {% else %}
-
-          <button
-            type="submit"
-            class="btn btn-outline-primary btn-sm"
-          >
-            🤍 Like
-          </button>
-
-        {% endif %}
-      </form>
-
-      {% else %}
-
-      <a
-        href="{% url 'login' %}"
-        class="btn btn-outline-secondary btn-sm"
-      >
-        Login to Like
-      </a>
-
-      {% endif %}
-
-      <!-- Like Count -->
-      <span class="like-count">
-        ❤️ {{ like_count }} Likes
-      </span>
-
     </div>
 
-    <!-- Update/Delete -->
-    {% if post.author == user %}
-    <div class="post-actions d-flex gap-2">
+    <div class="social-stats-bar">
+      <div class="d-flex align-items-center gap-2">
+        {% if user.is_authenticated %}
+        <form action="{% url 'toggle-like' post.id %}" method="POST" class="m-0">
+          {% csrf_token %}
+          {% if post.id in liked_posts %}
+          <button type="submit" class="btn-like-detail">
+            <i class="fa-solid fa-heart animate-pulse"></i> Liked
+          </button>
+          {% else %}
+          <button type="submit" class="btn-like-outline-detail">
+            <i class="fa-regular fa-heart"></i> Like
+          </button>
+          {% endif %}
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn-like-outline-detail text-decoration-none">
+          <i class="fa-regular fa-heart"></i> Like
+        </a>
+        {% endif %}
 
-      <a
-        class="btn btn-secondary"
-        href="{% url 'post-update' post.pk %}"
-      >
-        Update
+        <div class="like-counter-badge">
+          <i class="fa-solid fa-heart text-danger"></i>
+          <span>{{ like_count }} Like{{ like_count|pluralize }}</span>
+        </div>
+      </div>
+
+      <!-- Author specific admin buttons -->
+      {% if post.author == user %}
+      <div class="author-actions-box">
+        <a class="btn btn-edit-post" href="{% url 'post-update' post.pk %}">
+          <i class="fa-regular fa-pen-to-square me-1"></i>Edit
+        </a>
+        <a class="btn btn-delete-post" href="{% url 'post-delete' post.pk %}">
+          <i class="fa-regular fa-trash-can me-1"></i>Delete
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </article>
+
+  <!-- Overhauled Comments System -->
+  <section class="glass-card comments-container" id="comments">
+    <h3 class="comments-title">
+      <i class="fa-regular fa-comments text-primary"></i>
+      Discussion ({{ comments|length }})
+    </h3>
+
+    {% if user.is_authenticated %}
+    <form method="POST" class="mb-4">
+      {% csrf_token %}
+      {{ comment_form|crispy }}
+      <button type="submit" class="btn btn-primary mt-2">
+        <i class="fa-regular fa-paper-plane me-1"></i>Post Comment
+      </button>
+    </form>
+    {% else %}
+    <div class="glass-card p-4 text-center mb-4" style="background: rgba(247, 251, 255, 0.84);">
+      <p class="text-secondary mb-2">Want to join the discussion?</p>
+      <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-outline-secondary btn-sm px-4">
+        Log in to Comment
       </a>
-
-      <a
-        class="btn btn-danger"
-        href="{% url 'post-delete' post.pk %}"
-      >
-        Delete
-      </a>
-
     </div>
     {% endif %}
 
-  </article>
+    <div class="comments-feed mt-4">
+      {% for comment in comments %}
+      <div class="comment-bubble">
+        <div class="comment-header-row">
+          <div class="author-info-group">
+            <div class="avatar-circle" style="width:32px; height:32px; font-size:0.8rem; box-shadow:none;">
+              {{ comment.author.username|slice:":1"|upper }}
+            </div>
+            <span class="commenter-name">{{ comment.author.username }}</span>
+          </div>
+          <span class="comment-date">
+            <i class="fa-regular fa-calendar-alt me-1"></i>{{ comment.created_at|date:"M d, Y H:i" }}
+          </span>
+        </div>
+        <p class="comment-body">{{ comment.content }}</p>
+      </div>
+      {% empty %}
+      <div class="text-center py-4 text-secondary">
+        <i class="fa-regular fa-comment-dots fs-3 mb-2 d-block"></i>
+        <span>No comments yet. Start the conversation!</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
 </div>
 
 {% endblock content %}

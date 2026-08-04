@@ -1,11 +1,167 @@
-{% extends "myapp/base.html" %} {% block content %}
-<div class="container mt-5" style="height: 110vh">
-  <div class="text-center p-5 bg-light border rounded shadow-sm">
-    <h1 class="display-4 mb-3">Welcome to the Blog Website</h1>
-    <p class="lead text-muted">
-      Explore posts, share your thoughts, and stay inspired every day.
-    </p>
-    <a href="{% url 'blog' %}" class="btn btn-primary mt-3">Learn More</a>
+{% extends "myapp/base.html" %} 
+{% block content %}
+<style>
+  .hero-section {
+    padding: 6rem 1rem;
+    position: relative;
+    /* overflow: hidden; */
+    text-align: center;
+  }
+
+  .hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 1rem 0;
+    border-radius: 36px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(255, 248, 236, 0.94));
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    box-shadow: 0 24px 55px rgba(148, 163, 184, 0.16);
+    z-index: -2;
+  }
+
+  .hero-section > * {
+    position: relative;
+  }
+
+  .hero-gradient-text {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #142235 0%, #2563eb 58%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-subtext {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    color: #5b6878;
+    max-width: 650px;
+    margin: 0 auto 3rem auto;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* Dynamic glowing light spot behind hero */
+  .hero-glow-spot {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35vw;
+    height: 35vw;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(245, 158, 11, 0.08) 45%, transparent 72%);
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(40px);
+  }
+
+  .feature-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    background: rgba(219, 234, 254, 0.9);
+    border: 1px solid rgba(37, 99, 235, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .glass-card:hover .feature-icon-wrapper {
+    background: linear-gradient(135deg, #2563eb, #38bdf8);
+    color: #ffffff;
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.2);
+  }
+
+  .cta-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .feature-grid {
+    margin-top: 5rem;
+  }
+
+  .feature-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-desc {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+</style>
+
+<div class="hero-section">
+  <div class="hero-glow-spot"></div>
+  <h1 class="hero-gradient-text">Publish Your Passions.</h1>
+  <p class="hero-subtext">
+    A premium, lightning-fast platform to share Blogs, connect with readers, and express your creative voice.
+  </p>
+  
+  <div class="cta-group">
+    <a href="{% url 'blog' %}" class="btn btn-primary btn-lg px-5 py-3">
+      <i class="fa-regular fa-compass me-2"></i>Explore Feed
+    </a>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'register' %}" class="btn btn-secondary btn-lg px-5 py-3">
+      <i class="fa-solid fa-rocket me-2"></i>Get Started Free
+    </a>
+    {% else %}
+    <a href="{% url 'post-create' %}" class="btn btn-secondary btn-lg px-5 py-3">
+      <i class="fa-solid fa-pen-nib me-2"></i>Write a Blog
+    </a>
+    {% endif %}
   </div>
-</div>
+
+  <!-- Features showcase grid -->
+  <!-- <div class="row feature-grid g-4">
+    <div class="col-md-4">
+      <div class="glass-card h-100 p-4 text-start">
+        <div class="feature-icon-wrapper">
+          <i class="fa-solid fa-feather-pointed"></i>
+        </div>
+        <h3 class="feature-title">Beautiful Writing</h3>
+        <p class="feature-desc">
+          Draft posts smoothly with our optimized and intuitive modern layout, making publication enjoyable.
+        </p>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="glass-card h-100 p-4 text-start">
+        <div class="feature-icon-wrapper">
+          <i class="fa-regular fa-face-smile"></i>
+        </div>
+        <h3 class="feature-title">Community Driven</h3>
+        <p class="feature-desc">
+          Give and receive high-speed feedback with immediate social post likes and nested discussions.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="glass-card h-100 p-4 text-start">
+        <div class="feature-icon-wrapper">
+          <i class="fa-solid fa-infinity"></i>
+        </div>
+        <h3 class="feature-title">High Performance</h3>
+        <p class="feature-desc">
+          Engineered for fluid navigation, lightning page speed loadouts, and sleek glassmorphic aesthetics.
+        </p>
+      </div>
+    </div>
+  </div>
+</div> -->
 {% endblock content %}
+

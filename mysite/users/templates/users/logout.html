@@ -1,16 +1,58 @@
-{% extends "myapp/base.html" %} {% block content %}
-<div class="container mt-5">
-  <div class="alert alert-info text-center shadow-sm rounded-4 p-5">
-    <h2 class="mb-3">✅ You have been logged out</h2>
-    <p class="text-muted mb-4">
-      You’ve successfully logged out. Come back anytime by logging in again.
+{% extends "myapp/base.html" %} 
+{% block content %}
+<style>
+  .logout-container {
+    max-width: 550px;
+    margin: 4rem auto;
+  }
+  .logout-card {
+    padding: 3.5rem 2.5rem;
+    text-align: center;
+  }
+  .logout-icon {
+    font-size: 3rem;
+    color: #10b981;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    background: rgba(16, 185, 129, 0.08);
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    border-radius: 50%;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+  .logout-headline {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, #142235, #2563eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logout-subtitle {
+    color: #64748b;
+    margin-bottom: 2.25rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+</style>
+
+<div class="logout-container">
+  <div class="glass-card logout-card">
+    <div class="logout-icon">
+      <i class="fa-solid fa-circle-check animate-bounce"></i>
+    </div>
+    <h2 class="logout-headline">Logged Out</h2>
+    <p class="logout-subtitle">
+      You have successfully signed out of your account. Come back anytime to share more Blogs!
     </p>
     <a
-      class="btn btn-outline-primary btn-lg px-4 rounded-pill"
+      class="btn btn-primary px-5 py-3 rounded-3"
       href="{% url 'login' %}"
     >
-      Login Again
+      <i class="fa-solid fa-arrow-right-to-bracket me-1"></i>Login Again
     </a>
   </div>
 </div>
 {% endblock %}
+

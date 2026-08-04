@@ -1,4 +1,6 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
+from .forms import CommentForm
 from .models import Post, Like
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -21,7 +23,7 @@ class PostListView(ListView):
     template_name = "myapp/blog.html"
     context_object_name = "posts"
     paginate_by = 3
-    ordering = ["id"]
+    ordering = ["-created_at", "-id"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -44,11 +46,11 @@ class UserPostListView(ListView):
     template_name = "myapp/user_posts.html"
     context_object_name = "posts"
     paginate_by = 3
-    ordering = ["-id"]
+    ordering = ["-created_at", "-id"]
 
     def get_queryset(self):
         user = get_object_or_404(User, username = self.kwargs.get("username"))
-        return Post.objects.filter(author = user)
+        return Post.objects.filter(author = user).order_by("-created_at", "-id")
 
 
 
@@ -57,18 +59,42 @@ class PostDetailView(DetailView):
     model = Post
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data()
+        context = super().get_context_data(**kwargs)
 
         post = self.object
         user = self.request.user
 
         context["like_count"] = post.liked_users.count()
+        context["comments"] = post.comments.select_related("author")
+        context["comment_form"] = kwargs.get("comment_form") or CommentForm()
 
         if user.is_authenticated:
             context["liked_posts"] = Like.objects.filter(user = user).values_list("post_id", flat = True)
-
+        else:
+            context["liked_posts"] = []
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if not request.user.is_authenticated:
+            messages.info(request, "Please log in to comment on posts.")
+            return redirect(f"{reverse_lazy('login')}?next={request.path}")
+
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            comment = form.save(commit = False)
+            comment.post = self.object
+            comment.author = request.user
+            comment.save()
+            messages.success(request, "Your comment was posted.")
+            return redirect(f"{self.object.get_absolute_url()}#comments")
+
+        messages.error(request, "Please enter a comment before posting.")
+        context = self.get_context_data(comment_form = form)
+        return self.render_to_response(context)
 
 
 
