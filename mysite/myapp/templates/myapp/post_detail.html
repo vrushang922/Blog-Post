@@ -1,8 +1,11 @@
 {% extends "myapp/base.html" %}
+
 {% load crispy_forms_tags %}
+
 {% block content %}
 
 <style>
+
   .article-detail-container {
     max-width: 800px;
     margin: 0 auto;
@@ -39,11 +42,6 @@
     color: #3b82f6;
   }
 
-  .detail-date {
-    font-size: 0.8rem;
-    color: #64748b;
-  }
-
   .detail-title {
     font-size: clamp(2rem, 5vw, 2.75rem);
     font-weight: 800;
@@ -62,6 +60,7 @@
   }
 
   /* Heart and interactive buttons */
+
   .social-stats-bar {
     display: flex;
     align-items: center;
@@ -126,6 +125,7 @@
   }
 
   /* Author action buttons */
+
   .author-actions-box {
     display: flex;
     gap: 0.75rem;
@@ -160,6 +160,7 @@
   }
 
   /* Comments structure */
+
   .comments-container {
     padding: 2.5rem;
     margin-top: 2rem;
@@ -214,35 +215,34 @@
   }
 
   /* Custom Crispy Comment Form style tweaks */
+
   .comments-container form textarea {
     min-height: 100px;
     resize: vertical;
   }
+
 </style>
 
 <div class="article-detail-container">
+
   <article class="glass-card detail-card">
+
     <div class="detail-meta-bar">
+
       <div class="author-info-group">
+
         <div class="avatar-circle">
           {{ post.author.username|slice:":1"|upper }}
         </div>
+
         <div>
           <a class="detail-author-name" href="{% url 'user-posts' post.author.username %}">
             {{ post.author }}
           </a>
-          <div class="detail-date">Published recently</div>
         </div>
+
       </div>
-      
-      <div class="post-date-read text-muted">
-        {% with w_count=post.content|wordcount %}
-        <span>
-          <i class="fa-regular fa-clock me-1"></i>
-          {% if w_count < 150 %}1{% elif w_count < 300 %}2{% elif w_count < 500 %}3{% else %}5{% endif %} min read
-        </span>
-        {% endwith %}
-      </div>
+
     </div>
 
     <h1 class="detail-title">{{ post.title }}</h1>
@@ -252,94 +252,149 @@
     </div>
 
     <div class="social-stats-bar">
+
       <div class="d-flex align-items-center gap-2">
+
         {% if user.is_authenticated %}
+
         <form action="{% url 'toggle-like' post.id %}" method="POST" class="m-0">
+
           {% csrf_token %}
+
           {% if post.id in liked_posts %}
+
           <button type="submit" class="btn-like-detail">
             <i class="fa-solid fa-heart animate-pulse"></i> Liked
           </button>
+
           {% else %}
+
           <button type="submit" class="btn-like-outline-detail">
             <i class="fa-regular fa-heart"></i> Like
           </button>
+
           {% endif %}
+
         </form>
+
         {% else %}
+
         <a href="{% url 'login' %}" class="btn-like-outline-detail text-decoration-none">
           <i class="fa-regular fa-heart"></i> Like
         </a>
+
         {% endif %}
 
         <div class="like-counter-badge">
           <i class="fa-solid fa-heart text-danger"></i>
           <span>{{ like_count }} Like{{ like_count|pluralize }}</span>
         </div>
+
       </div>
 
       <!-- Author specific admin buttons -->
+
       {% if post.author == user %}
+
       <div class="author-actions-box">
+
         <a class="btn btn-edit-post" href="{% url 'post-update' post.pk %}">
           <i class="fa-regular fa-pen-to-square me-1"></i>Edit
         </a>
+
         <a class="btn btn-delete-post" href="{% url 'post-delete' post.pk %}">
           <i class="fa-regular fa-trash-can me-1"></i>Delete
         </a>
+
       </div>
+
       {% endif %}
+
     </div>
+
   </article>
 
   <!-- Overhauled Comments System -->
+
   <section class="glass-card comments-container" id="comments">
+
     <h3 class="comments-title">
       <i class="fa-regular fa-comments text-primary"></i>
       Discussion ({{ comments|length }})
     </h3>
 
     {% if user.is_authenticated %}
+
     <form method="POST" class="mb-4">
+
       {% csrf_token %}
+
       {{ comment_form|crispy }}
+
       <button type="submit" class="btn btn-primary mt-2">
         <i class="fa-regular fa-paper-plane me-1"></i>Post Comment
       </button>
+
     </form>
+
     {% else %}
+
     <div class="glass-card p-4 text-center mb-4" style="background: rgba(247, 251, 255, 0.84);">
+
       <p class="text-secondary mb-2">Want to join the discussion?</p>
+
       <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-outline-secondary btn-sm px-4">
         Log in to Comment
       </a>
+
     </div>
+
     {% endif %}
 
     <div class="comments-feed mt-4">
+
       {% for comment in comments %}
+
       <div class="comment-bubble">
+
         <div class="comment-header-row">
+
           <div class="author-info-group">
+
             <div class="avatar-circle" style="width:32px; height:32px; font-size:0.8rem; box-shadow:none;">
               {{ comment.author.username|slice:":1"|upper }}
             </div>
+
             <span class="commenter-name">{{ comment.author.username }}</span>
+
           </div>
+
           <span class="comment-date">
             <i class="fa-regular fa-calendar-alt me-1"></i>{{ comment.created_at|date:"M d, Y H:i" }}
           </span>
+
         </div>
+
         <p class="comment-body">{{ comment.content }}</p>
+
       </div>
+
       {% empty %}
+
       <div class="text-center py-4 text-secondary">
+
         <i class="fa-regular fa-comment-dots fs-3 mb-2 d-block"></i>
+
         <span>No comments yet. Start the conversation!</span>
+
       </div>
+
       {% endfor %}
+
     </div>
+
   </section>
+
 </div>
 
 {% endblock content %}

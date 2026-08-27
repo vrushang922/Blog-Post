@@ -59,14 +59,6 @@
     color: #2563eb;
   }
 
-  .post-date-read {
-    font-size: 0.8rem;
-    color: #64748b;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
   .post-card-title {
     font-size: 1.5rem;
     font-weight: 700;
@@ -292,17 +284,6 @@
             <a class="author-name-link" href="{% url 'user-posts' post.author.username %}">
               {{ post.author.username }}
             </a>
-            <div class="post-date-read">
-              <span>Published recently</span>
-              <span>&bull;</span>
-              <!-- Smart template read time proxy -->
-              {% with w_count=post.content|wordcount %}
-              <span>
-                <i class="fa-regular fa-clock me-1"></i>
-                {% if w_count < 150 %}1{% elif w_count < 300 %}2{% elif w_count < 500 %}3{% else %}5{% endif %} min read
-              </span>
-              {% endwith %}
-            </div>
           </div>
         </div>
       </div>

@@ -4,6 +4,8 @@ __pycache__/
 *.pyc
 
 db.sqlite3
-mysite/db.sqlite3
-mysite/users/migrations/0002_alter_profile_user.py
 
+mysite/db.sqlite3
+mysite/db.sqlite3
+mysite/db.sqlite3
+mysite/myapp/templates/myapp/sample.html

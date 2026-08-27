@@ -22,7 +22,7 @@ class PostListView(ListView):
     model = Post
     template_name = "myapp/blog.html"
     context_object_name = "posts"
-    paginate_by = 3
+    paginate_by = 5
     ordering = ["-created_at", "-id"]
 
     def get_context_data(self, **kwargs):
@@ -45,7 +45,7 @@ class UserPostListView(ListView):
     model = Post
     template_name = "myapp/user_posts.html"
     context_object_name = "posts"
-    paginate_by = 3
+    paginate_by = 5
     ordering = ["-created_at", "-id"]
 
     def get_queryset(self):

@@ -1,7 +1,9 @@
 {% extends "myapp/base.html" %} 
+
 {% block content %}
 
 <style>
+
   .profile-header-card {
     padding: 3rem 2rem;
     text-align: center;
@@ -62,6 +64,7 @@
   }
 
   /* Post Card Uniform Styling */
+
   .article-card {
     margin-bottom: 2rem;
     padding: 2.25rem;
@@ -94,18 +97,10 @@
   .post-meta-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     border-top: 1px solid rgba(148, 163, 184, 0.16);
     padding-top: 1.25rem;
     margin-top: 1.5rem;
-  }
-
-  .post-date-read {
-    font-size: 0.85rem;
-    color: #64748b;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
   }
 
   .interaction-metrics {
@@ -117,6 +112,7 @@
   }
 
   /* Pagination */
+
   .pagination-container {
     margin-top: 4rem;
   }
@@ -162,76 +158,95 @@
     color: #94a3b8;
     pointer-events: none;
   }
+
 </style>
 
 <div class="glass-card profile-header-card">
+
   <div class="profile-header-glow"></div>
+
   <div class="profile-avatar-large">
     {{ view.kwargs.username|slice:":1"|upper }}
   </div>
+
   <h1 class="profile-username">Posts by {{ view.kwargs.username }}</h1>
+
   <div class="profile-stats-pill">
     <i class="fa-regular fa-newspaper text-primary"></i>
     <span>Total: <strong>{{ page_obj.paginator.count }}</strong> post{{ page_obj.paginator.count|pluralize }}</span>
   </div>
+
 </div>
 
 <div class="row justify-content-center">
+
   <div class="col-md-9">
+
     {% for post in posts %}
+
     <article class="glass-card article-card">
+
       <h2 class="post-card-title">
         <a class="post-card-title-link" href="{% url 'post-detail' post.id %}">
           {{ post.title }}
         </a>
       </h2>
-      
+
       <p class="post-excerpt">{{ post.content|truncatewords:42 }}</p>
 
       <div class="post-meta-row">
-        <div class="post-date-read">
-          <span>Published recently</span>
-          <span>&bull;</span>
-          {% with w_count=post.content|wordcount %}
-          <span>
-            <i class="fa-regular fa-clock me-1"></i>
-            {% if w_count < 150 %}1{% elif w_count < 300 %}2{% elif w_count < 500 %}3{% else %}5{% endif %} min read
-          </span>
-          {% endwith %}
-        </div>
 
         <div class="interaction-metrics">
           <span><i class="fa-solid fa-heart text-danger me-1"></i>{{ post.liked_users.count }} Likes</span>
           <span><i class="fa-regular fa-comment text-primary me-1"></i>{{ post.comments.count }} Comments</span>
         </div>
+
       </div>
+
     </article>
+
     {% empty %}
+
     <div class="glass-card p-5 text-center">
+
       <i class="fa-regular fa-folder-open fs-1 text-muted mb-3 d-block"></i>
+
       <h4 class="mb-2" style="color: var(--text-title);">No posts available</h4>
+
       <p class="text-secondary mb-0">This user hasn't published any Blogs yet.</p>
+
     </div>
+
     {% endfor %}
 
     <!-- Pagination -->
+
     {% if is_paginated %}
+
     <nav class="pagination-container" aria-label="Page navigation">
+
       <ul class="custom-pagination">
+
         {% if page_obj.has_previous %}
+
         <li class="page-item">
           <a class="page-link" href="?page=1"><i class="fa-solid fa-angles-left"></i></a>
         </li>
+
         <li class="page-item">
           <a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-angle-left"></i> Prev</a>
         </li>
+
         {% else %}
+
         <li class="page-item disabled">
           <span class="page-link"><i class="fa-solid fa-angles-left"></i></span>
         </li>
+
         <li class="page-item disabled">
           <span class="page-link"><i class="fa-solid fa-angle-left"></i> Prev</span>
         </li>
+
         {% endif %}
 
         <li class="page-item active">
@@ -239,25 +254,35 @@
         </li>
 
         {% if page_obj.has_next %}
+
         <li class="page-item">
           <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next <i class="fa-solid fa-angle-right"></i></a>
         </li>
+
         <li class="page-item">
           <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a>
         </li>
+
         {% else %}
+
         <li class="page-item disabled">
           <span class="page-link">Next <i class="fa-solid fa-angle-right"></i></span>
         </li>
+
         <li class="page-item disabled">
           <span class="page-link"><i class="fa-solid fa-angles-right"></i></span>
         </li>
+
         {% endif %}
+
       </ul>
+
     </nav>
+
     {% endif %}
+
   </div>
+
 </div>
 
 {% endblock content %}
-
