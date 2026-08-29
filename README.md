@@ -146,7 +146,3 @@ This project was built to practice and demonstrate Django web development concep
 - Django templates
 - Pagination
 - Form handling
-
-## License
-
-This project is intended for learning and portfolio purposes.
